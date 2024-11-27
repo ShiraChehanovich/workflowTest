@@ -1,4 +1,3 @@
-
 import {Sequelize} from "sequelize";
 import {DB_SETTINGS} from "../application/configiration";
 
