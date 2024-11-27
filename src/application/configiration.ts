@@ -1,10 +1,12 @@
 import {Dialect} from "sequelize";
+import {dbSettingType} from "../utils/types";
 
 
-export const DB_SETTINGS = {
-    DATABASE: process.env.DATABASE || "",
-    USERNAME: process.env.USERNAME || "",
-    PASSWORD: process.env.PASSWORD || "",
-    URL: process.env.URL || "",
+export const DB_SETTINGS: dbSettingType = {
+    DATABASE: `${process.env.DB_DATABASE}` || "",
+    USERNAME: `${process.env.DB_USERNAME}` || "",
+    PASSWORD: `${process.env.DB_PASSWORD}` || "",
+    HOST: process.env.DB_HOST || "",
+    PORT: Number(process.env.DB_PORT) || 5432,
     TYPE: 'postgres' as Dialect,
 }
