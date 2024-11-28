@@ -5,13 +5,13 @@ import Workflow from "./workflowDB";
 
 const Task = sequelize.define('Task', {
    id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      autoIncrement: true,
    },
    name: DataTypes.STRING,
    workflow_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
    },
    createdAt: {

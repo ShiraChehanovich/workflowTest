@@ -4,9 +4,9 @@ import {DataTypes} from "sequelize";
 
 const Workflow = sequelize.define('Workflow', {
     id: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
+        autoIncrement: true,
     },
     name: DataTypes.STRING,
     createdAt: {
