@@ -19,8 +19,8 @@ export class WorkflowService {
             throw new Error(ErrorType.notFound);
         }
     }
-    static async update(id: number, updateWorkflow: WorkflowType): Promise<any> {
-        const workflow = await Workflow.findByPk(id);
+    static async update(updateWorkflow: WorkflowType): Promise<any> {
+        const workflow = await Workflow.findByPk(updateWorkflow.id);
         if (workflow) {
             await workflow.update({
                 ...updateWorkflow,

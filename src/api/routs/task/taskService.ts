@@ -25,8 +25,8 @@ export class TaskService {
         await Task.destroy({where});
     }
 
-    static async update(id: number, updatedTask: TaskType): Promise<any> {
-        const task = await Task.findByPk(id);
+    static async update(updatedTask: TaskType): Promise<any> {
+        const task = await Task.findByPk(updatedTask.id);
         if (task) {
             await task.update({
                 ...updatedTask,

@@ -31,9 +31,10 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     const id: number = Number(req.params.id);
-    const body: TaskType = req.body;
+    const task: TaskType = req.body;
+    task.id = id;
     try {
-        const updatedTask = await TaskService.update(id, body);
+        const updatedTask = await TaskService.update(task);
         res.status(200).json(updatedTask);
     } catch (error: any) {
         if (error.message === ErrorType.notFound) {

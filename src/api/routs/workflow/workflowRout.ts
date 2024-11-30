@@ -32,9 +32,10 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     const id: number = Number(req.params.id);
-    const body: WorkflowType = req.body;
+    const workflow: WorkflowType = req.body;
+    workflow.id = id;
     try {
-        const updatedWorkflow = await WorkflowService.update(id, body);
+        const updatedWorkflow = await WorkflowService.update(workflow);
         res.status(200).json(updatedWorkflow);
     } catch (error: any) {
         if (error.message === ErrorType.notFound) {
