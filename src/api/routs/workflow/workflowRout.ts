@@ -1,50 +1,53 @@
 import express from "express";
-import Workflow from "../../../db/workflowDB";
+import {WorkflowService} from "./workflowService";
+import {ErrorType, ResponseType} from "../../../utils/enums";
+import {WorkflowType} from "../../../utils/types";
 
 const router = express.Router();
 
-router.get('/all', async (_, res) => {
-    const workflows = await Workflow.findAll();
+router.get('/', async (_, res) => {
+    const workflows = await WorkflowService.getAll();
     res.status(200).json(workflows);
 })
 
 router.get('/:id', async (req, res) => {
-    const id = req.params.id;
-    const workflow = await Workflow.findByPk(id);
+    const id: number = Number(req.params.id);
+    const workflow = await WorkflowService.get(id);
     res.status(200).json(workflow);
 })
 
 router.delete('/:id', async (req, res) => {
-    const id = req.params.id;
-    const workflow = await Workflow.findByPk(id);
-    if (workflow) {
-        await workflow.destroy();
-        res.status(200).json({message: "Workflow deleted successfully"});
-    } else {
-        res.status(404).json({message: "Workflow not found"});
+    const id: number = Number(req.params.id);
+    try {
+        await WorkflowService.delete(id);
+        res.status(200).json({message: ResponseType.workflowDeleted});
+    } catch (error: any) {
+        if (error.message === ErrorType.notFound) {
+            res.status(404).json({message: ResponseType.workflowNotFound});
+        }
+        res.status(500).json({message: error.message});
     }
 
 })
 
 router.put('/:id', async (req, res) => {
-    const id = req.params.id;
-    const workflow = await Workflow.findByPk(id);
-    if (workflow) {
-        await workflow.update({
-            ...req.body,
-            updatedAt: Date.now(),
-        });
-        res.status(200).json(workflow);
-    } else {
-        console.log("hey there")
-        res.status(404).json({message: "Workflow not found"});
+    const id: number = Number(req.params.id);
+    const body: WorkflowType = req.body;
+    try {
+        const updatedWorkflow = await WorkflowService.update(id, body);
+        res.status(200).json(updatedWorkflow);
+    } catch (error: any) {
+        if (error.message === ErrorType.notFound) {
+            res.status(404).json({message: ResponseType.workflowNotFound});
+        }
+        res.status(500).json({message: error.message});
     }
 })
 
 router.post('/', async (req, res) => {
-    const body = req.body;
-    const workflow = await Workflow.create(body)
-    res.status(201).json(workflow);
+    const body: WorkflowType = req.body;
+    const task = await WorkflowService.create(body);
+    res.status(201).json(task);
 })
 
 export default router;
