@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    image: shirachech15751/workflow-test:v1.0.0
+    container_name: node-app
+    environment:
+      - DB_HOST=postgres
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    command: npm run start:dev
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
