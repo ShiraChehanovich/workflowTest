@@ -1,21 +1,33 @@
 import Task from "../../../db/taskDB";
-import {WhereOptions} from "sequelize";
+import {Op, WhereOptions} from "sequelize";
 import {ErrorType} from "../../../utils/enums";
 import {TaskType} from "../../../utils/types";
 
 export class TaskService {
-    static async getAll(): Promise<any> {
-        return await Task.findAll();
-    }
+    static async get(ids?: number[], workflowId?: number[]) {
+        const whereConditions: any = [];
 
-    static async getById(id: number): Promise<any> {
-        return await Task.findByPk(id);
+        if (ids && ids.length > 0) {
+            whereConditions.push({id: {[Op.in]: ids}});
+        }
+
+        if (workflowId && workflowId.length > 0) {
+            whereConditions.push({workflow_id: {[Op.in]: workflowId}});
+        }
+
+        const whereClause = whereConditions.length === 0
+            ? {}
+            :  {[Op.or]: whereConditions};
+
+        return await Task.findAll({
+            where: whereClause
+        });
     }
 
     static async delete(id: number): Promise<void> {
-        const task = await Task.findByPk(id);
-        if (task) {
-            await task.destroy();
+        const task = await this.get([id]);
+        if (task.length === 1) {
+            await task[0].destroy();
         } else {
             throw new Error(ErrorType.notFound);
         }
@@ -26,13 +38,13 @@ export class TaskService {
     }
 
     static async update(updatedTask: TaskType): Promise<any> {
-        const task = await Task.findByPk(updatedTask.id);
-        if (task) {
-            await task.update({
+        const task = await this.get([updatedTask.id]);
+        if (task.length === 1) {
+            await task[0].update({
                 ...updatedTask,
                 updatedAt: Date.now(),
             });
-            return task;
+            return task[0];
         } else {
             throw new Error(ErrorType.notFound);
         }

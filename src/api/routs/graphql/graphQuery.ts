@@ -8,25 +8,19 @@ import {WorkflowService} from "../workflow/workflowService";
 import {TaskQL, WorkflowQL} from "./graphTypes";
 
 
-
 export const graphQuery = new GraphQLObjectType({
     name: "Query",
     fields: {
         tasks: {
             type: new GraphQLList(TaskQL),
-            resolve: async () => await TaskService.getAll(),
-        },
-        task: {
-            type: TaskQL,
-            args: {id: {type: GraphQLInt}},
-            resolve: async (_, {id}) => await TaskService.getById(id),
+            args: {
+                ids: {type: new GraphQLList(GraphQLInt)},
+                workflow_id: {type: new GraphQLList(GraphQLInt)},
+            },
+            resolve: async (_, {ids, workflow_id}) => await TaskService.get(ids, workflow_id),
         },
         workflows: {
             type: new GraphQLList(WorkflowQL),
-            resolve: async () => await WorkflowService.getAll(),
-        },
-        workflow: {
-            type: WorkflowQL,
             args: {id: {type: GraphQLInt}},
             resolve: async (_, {id}) => await WorkflowService.get(id),
         },

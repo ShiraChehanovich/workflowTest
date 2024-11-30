@@ -2,31 +2,43 @@ import Workflow from "../../../db/workflowDB";
 import {TaskService} from "../task/taskService";
 import {ErrorType} from "../../../utils/enums";
 import {WorkflowType} from "../../../utils/types";
+import {Op} from "sequelize";
+import Task from "../../../db/taskDB";
 
 export class WorkflowService {
-    static async get(id: number) {
-        return await Workflow.findByPk(id);
+    static async get(ids?: number[]) {
+        const whereConditions: any = [];
+
+        if (ids && ids.length > 0) {
+            whereConditions.push({id: {[Op.in]: ids}});
+        }
+        const whereClause = whereConditions.length === 0
+            ? {}
+            : whereConditions;
+
+        return await Task.findAll({
+            where: whereClause
+        });
     }
-    static async getAll(): Promise<any[]> {
-        return await Workflow.findAll();
-    }
+
     static async delete(id: number): Promise<any> {
-        const workflow =  await this.get(id);
-        if (workflow) {
+        const workflow = await this.get([id]);
+        if (workflow.length === 1) {
             await TaskService.deleteByParams({workflow_id: id});
-            await workflow.destroy();
+            await workflow[0].destroy();
         } else {
             throw new Error(ErrorType.notFound);
         }
     }
+
     static async update(updateWorkflow: WorkflowType): Promise<any> {
-        const workflow = await Workflow.findByPk(updateWorkflow.id);
-        if (workflow) {
-            await workflow.update({
+        const workflow = await this.get([updateWorkflow.id]);
+        if (workflow.length === 1) {
+            await workflow[0].update({
                 ...updateWorkflow,
                 updatedAt: Date.now(),
             });
-            return workflow;
+            return workflow[0];
         } else {
             throw new Error(ErrorType.notFound);
         }

@@ -6,13 +6,13 @@ import {WorkflowType} from "../../../utils/types";
 const router = express.Router();
 
 router.get('/', async (_, res) => {
-    const workflows = await WorkflowService.getAll();
+    const workflows = await WorkflowService.get();
     res.status(200).json(workflows);
 })
 
 router.get('/:id', async (req, res) => {
     const id: number = Number(req.params.id);
-    const workflow = await WorkflowService.get(id);
+    const workflow = await WorkflowService.get([id]);
     res.status(200).json(workflow);
 })
 

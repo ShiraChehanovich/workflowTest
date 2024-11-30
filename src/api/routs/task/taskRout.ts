@@ -6,13 +6,13 @@ import {TaskType} from "../../../utils/types";
 const router = express.Router();
 
 router.get('/', async (_, res) => {
-    const tasks = await TaskService.getAll();
+    const tasks = await TaskService.get();
     res.status(200).json(tasks);
 })
 
 router.get('/:id', async (req, res) => {
     const id: number = Number(req.params.id);
-    const task = await TaskService.getById(id);
+    const task = await TaskService.get([id]);
     res.status(200).json(task);
 })
 
