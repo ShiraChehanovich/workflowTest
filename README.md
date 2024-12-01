@@ -29,12 +29,9 @@ You can also run the application using Docker. The prebuilt Docker image is avai
 ---
 
 ### Steps:
-- Download the Docker image from Docker Hub:
+- Run the Docker-compose from the project dir:
   ```bash
-      docker pull shirachech15751/workflow-test
-- Run the Docker image:
-  ```bash
-    docker run -d -p 3000:3000 shirachech15751/workflow-test
+    docker-compose up
 This will start the application on port 3000.
 ### Docker Hub Link:
 https://hub.docker.com/repository/docker/shirachech15751/workflow-test/
