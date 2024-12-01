@@ -3,7 +3,6 @@ import {TaskService} from "../task/taskService";
 import {ErrorType} from "../../../utils/enums";
 import {WorkflowType} from "../../../utils/types";
 import {Op} from "sequelize";
-import Task from "../../../db/taskDB";
 
 export class WorkflowService {
     static async get(ids?: number[]) {
@@ -16,7 +15,7 @@ export class WorkflowService {
             ? {}
             : whereConditions;
 
-        return await Task.findAll({
+        return await Workflow.findAll({
             where: whereClause
         });
     }

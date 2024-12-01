@@ -2,6 +2,7 @@ import Task from "../../../db/taskDB";
 import {Op, WhereOptions} from "sequelize";
 import {ErrorType} from "../../../utils/enums";
 import {TaskType} from "../../../utils/types";
+import {WorkflowService} from "../workflow/workflowService";
 
 export class TaskService {
     static async get(ids?: number[], workflowId?: number[]) {
@@ -39,7 +40,8 @@ export class TaskService {
 
     static async update(updatedTask: TaskType): Promise<any> {
         const task = await this.get([updatedTask.id]);
-        if (task.length === 1) {
+        const workflow = await WorkflowService.get([updatedTask.workflow_id]);
+        if (task.length === 1 && workflow.length === 1) {
             await task[0].update({
                 ...updatedTask,
                 updatedAt: Date.now(),
@@ -51,6 +53,11 @@ export class TaskService {
     }
 
     static async create(newTask: TaskType): Promise<any> {
-        return await Task.create(newTask);
+        const workflow = await WorkflowService.get([newTask.workflow_id]);
+        if (workflow.length === 1) {
+            return await Task.create(newTask);
+        } else {
+            throw new Error(ErrorType.notFound);
+        }
     }
 }

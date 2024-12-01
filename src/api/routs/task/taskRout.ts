@@ -13,7 +13,11 @@ router.get('/', async (_, res) => {
 router.get('/:id', async (req, res) => {
     const id: number = Number(req.params.id);
     const task = await TaskService.get([id]);
-    res.status(200).json(task);
+    if(task.length === 1) {
+        res.status(200).json(task[0]);
+    } else {
+        res.status(404).json({message: ResponseType.taskNotFound});
+    }
 })
 
 router.delete('/:id', async (req, res) => {

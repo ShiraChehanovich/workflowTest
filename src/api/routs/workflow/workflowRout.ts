@@ -13,7 +13,11 @@ router.get('/', async (_, res) => {
 router.get('/:id', async (req, res) => {
     const id: number = Number(req.params.id);
     const workflow = await WorkflowService.get([id]);
-    res.status(200).json(workflow);
+    if(workflow.length === 1) {
+        res.status(200).json(workflow[0]);
+    } else {
+        res.status(404).json({message: ResponseType.workflowNotFound});
+    }
 })
 
 router.delete('/:id', async (req, res) => {
@@ -47,8 +51,8 @@ router.put('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const body: WorkflowType = req.body;
-    const task = await WorkflowService.create(body);
-    res.status(201).json(task);
+    const workflow = await WorkflowService.create(body);
+    res.status(201).json(workflow);
 })
 
 export default router;
