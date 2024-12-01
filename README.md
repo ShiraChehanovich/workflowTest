@@ -24,12 +24,11 @@ This is the Workflow Test application. Below are the steps to set it up and run 
   ```bash
   npm run
 
-
 ## Running With Docker
 You can also run the application using Docker. The prebuilt Docker image is available on Docker Hub.
 ---
 
-### Step 1: Set up a `.env` file
+### Steps:
 - Download the Docker image from Docker Hub:
   ```bash
       docker pull shirachech15751/workflow-test
